@@ -45,8 +45,8 @@ def train():
             batch_src_index = np.random.choice(train_index, size=(BTACH_SIZE,))
             batch_src_label = torch.from_numpy(train_label[batch_src_index]).long().to(DEVICE)
             batch_sampling_result = multihop_sampling(batch_src_index, NUM_NEIGHBORS_LIST, data.adjacency_dict)
-            batch_sampling_x = [torch.from_numpy(x[idx]).float().to(DEVICE) for idx in batch_sampling_result]
-            batch_train_logits = model(batch_sampling_x)
+            batch_sampling_x = [torch.from_numpy(x[idx]).float().to(DEVICE) for idx in batch_sampling_result] # 转化为张量
+            batch_train_logits = model(batch_sampling_x) # 从头到尾GraphSage只处理一个node，这里传入的是一个tensorlist，进行批处理运算
             loss = criterion(batch_train_logits, batch_src_label)
             optimizer.zero_grad()
             loss.backward()  # 反向传播计算参数的梯度
